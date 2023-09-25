@@ -8,6 +8,8 @@ from faker import Faker
 from app import app
 from models import db, Restaurant, Pizza, RestaurantPizza
 
+
+
 fake = Faker()
 
 # Seed Restaurants
@@ -37,7 +39,7 @@ def seed_restaurant_pizzas():
     for restaurant in Restaurant.query.all():
         for pizza in Pizza.query.all():
             restaurant_pizza = RestaurantPizza(
-                price=randint(1, 30),  # Generate a random price between 1 and 30
+                price=randint(1, 30),  
                 restaurant_id=restaurant.id,
                 pizza_id=pizza.id
             )
