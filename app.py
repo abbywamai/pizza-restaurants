@@ -17,8 +17,14 @@ db.init_app(app)
 
 from models import Restaurant, Pizza, RestaurantPizza
 
+# root route
+@app.route('/', methods=['GET'])
+def index():
+    return " Pizza Restaurant API!"
 
-# Route to get all restaurants
+
+
+# Routes
 @app.route('/restaurants', methods=['GET'])
 def get_restaurants():
     restaurants = Restaurant.query.all()
@@ -29,7 +35,7 @@ def get_restaurants():
     } for restaurant in restaurants]
     return jsonify(data)
 
-# Route to get a specific restaurant by id
+
 @app.route('/restaurants/<int:id>', methods=['GET'])
 def get_restaurant(id):
     restaurant = Restaurant.query.get(id)
@@ -47,23 +53,23 @@ def get_restaurant(id):
     }
     return jsonify(data)
 
-# Route to delete a restaurant by id
+
 @app.route('/restaurants/<int:id>', methods=['DELETE'])
 def delete_restaurant(id):
     restaurant = Restaurant.query.get(id)
     if restaurant is None:
         return jsonify({'error': 'Restaurant not found'}), 404
 
-    # Delete associated RestaurantPizzas
+    
     RestaurantPizza.query.filter_by(restaurant_id=id).delete()
     
-    # Delete the restaurant
+    
     db.session.delete(restaurant)
     db.session.commit()
 
     return '', 204
 
-# Route to get all pizzas
+
 @app.route('/pizzas', methods=['GET'])
 def get_pizzas():
     pizzas = Pizza.query.all()
@@ -74,7 +80,7 @@ def get_pizzas():
     } for pizza in pizzas]
     return jsonify(data)
 
-# Route to create a new RestaurantPizza
+
 @app.route('/restaurant_pizzas', methods=['POST'])
 def create_restaurant_pizza():
     data = request.json
@@ -82,11 +88,11 @@ def create_restaurant_pizza():
     pizza_id = data.get('pizza_id')
     restaurant_id = data.get('restaurant_id')
 
-    # Validate input data (you can add more validations as needed)
+    # Validate input data 
     if not all([price, pizza_id, restaurant_id]):
         return jsonify({'errors': ['Missing required fields']}), 400
 
-    # Create and add the new RestaurantPizza
+    
     try:
         new_pizza = RestaurantPizza(price=price, pizza_id=pizza_id, restaurant_id=restaurant_id)
         db.session.add(new_pizza)
